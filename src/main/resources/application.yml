@@ -21,10 +21,10 @@ server:
       max: 1000
     min-spare-threads: 100
 spring:
-  boot:
-    admin:
-      client:
-        url: http://192.168.0.103:9001
+#  boot:
+#    admin:
+#      client:
+#        url: http://192.168.0.103:9001
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/bmall?useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC&allowMultiQueries=true&useAffectedRows=true
