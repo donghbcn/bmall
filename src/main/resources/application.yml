@@ -1,0 +1,108 @@
+logging:
+  level:
+    ROOT: INFO
+
+management:
+  server:
+    port: 9090							# 一般启动独立端口（默认和应用端口一致），启用后源端口不可查
+  endpoints:
+    web:
+      base-path: /actuator				# 默认前缀路径，可修改
+      exposure:
+        include: '*'
+        exclude: env,heapdump
+
+server:
+  port: 8900
+  tomcat:
+    accept-count: 1000
+    max-connections: 10000
+    threads:
+      max: 1000
+    min-spare-threads: 100
+spring:
+  boot:
+    admin:
+      client:
+        url: http://192.168.0.103:9001
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bmall?useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC&allowMultiQueries=true&useAffectedRows=true
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource  # 使用 DruidDataSource作为数据源
+    druid:
+      initialSize: 5 #初始化连接大小
+      minIdle: 5     #最小连接池数量
+      maxActive: 1000  #最大连接池数量
+      maxWait: 60000 #获取连接时最大等待时间，单位毫秒
+      timeBetweenEvictionRunsMillis: 60000 #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      minEvictableIdleTimeMillis: 300000   #配置一个连接在池中最小生存的时间，单位是毫秒
+      validationQuery: SELECT 1 from DUAL  #测试连接
+      testWhileIdle: true                  #申请连接的时候检测，建议配置为true，不影响性能，并且保证安全性
+      testOnBorrow: false                  #获取连接时执行检测，建议关闭，影响性能
+      testOnReturn: false                  #归还连接时执行检测，建议关闭，影响性能
+      poolPreparedStatements: false       #是否开启PSCache，PSCache对支持游标的数据库性能提升巨大，oracle建议开启，mysql下建议关闭
+      maxPoolPreparedStatementPerConnectionSize: 20 #开启poolPreparedStatements后生效
+      filters: stat,wall,slf4j   #配置扩展插件，常用的插件有=>stat:监控统计  slf4j:日志  wall:防御sql注入
+      connectionProperties: 'druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000'
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        reset-enable: true
+        login-username: admin
+        login-password: 123
+        allow: 127.0.0.1
+      ######### 配置WebStatFilter，用于采集web关联监控的数据#########
+      web-stat-filter:
+        # web url监控
+        enabled: true
+        # session监控
+        session-stat-enable: true
+        # session的最大个数，默认100
+        session-stat-max-count: 1000
+        # 过滤所有url
+        url-pattern: /*
+        # 排除一些不必要的url
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+
+      # 自己配置监控统计拦截的filter
+      filter:
+        # 开启DruidDataSource的状态监控
+        stat:
+          enabled: true
+          db-type: mysql
+          # 开启慢sql监控，超过2s 就认为是慢sql，记录到日志中
+          log-slow-sql: true
+          slow-sql-millis: 2000
+
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: root
+#    url: jdbc:mysql://localhost:3306/bmall?useUnicode=true&characterEncoding=utf8
+
+#mybatis配置
+mybatis-plus:
+  # 映射文件的位置
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    #数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID", ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: AUTO
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      field-strategy: NOT_NULL
+      #驼峰下划线转换
+      column-underline: true
+      logic-delete-value: -1
+      logic-not-delete-value: 0
+    banner: false
+  #原生配置
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
+  # 配置包别名
+  type-aliases-package:  com.bmall.domain.entity
+
