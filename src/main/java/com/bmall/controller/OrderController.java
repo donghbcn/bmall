@@ -30,7 +30,7 @@ public class OrderController {
 
     @RequestMapping("/submit")
     public Long submitOrder2(@RequestParam("user_id") Long userId, @RequestParam("goods_id") Long goodsId, @RequestParam("count") Long count){
-        log.info("submitOrder2, userId:{}, goodsId:{}, count:{}", userId, goodsId, count);
+        //log.info("submitOrder2, userId:{}, goodsId:{}, count:{}", userId, goodsId, count);
         long t1 = System.currentTimeMillis();
         long result = orderService.submitOrder(userId, goodsId, count);
         //log.info("time cost to submit order:{}", (System.currentTimeMillis() - t1));

@@ -28,10 +28,10 @@ public class OrderService {
     public Long submitOrder(Long userId, Long goodsId, Long count){
         Goods goods = goodsRepository.findGoodsById(goodsId);
         Long balance = inventoryRepository.getGoodsBalanceById(goodsId);
-        inventoryRepository.deductBalance(goodsId);
+        inventoryRepository.deductBalance(goodsId, count);
         Order order = Order.of(userId, goods, count);
         int result = orderRepository.insert(order);
         //log.info("order is created, result:{}, id:{}", result, order.getId());
-        return balance;
+        return order.getId();
     }
 }

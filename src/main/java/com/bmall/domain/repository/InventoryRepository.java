@@ -15,9 +15,9 @@ public class InventoryRepository {
         return inventory.getBalance();
     }
 
-    public int deductBalance(Long id){
+    public int deductBalance(Long id, Long count){
         Inventory inventory = inventoryMapper.selectById(id);
-        inventory.setBalance(inventory.getBalance() - 1);
+        inventory.setBalance(inventory.getBalance() - count);
         return inventoryMapper.updateById(inventory);
     }
 }
